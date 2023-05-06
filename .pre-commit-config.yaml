@@ -1,0 +1,11 @@
+repos:
+- hooks:
+  - id: commitizen
+  repo: https://github.com/commitizen-tools/commitizen
+  rev: v2.35.0
+
+-   repo: https://github.com/hhatto/autopep8
+    rev: ...  # select the tag or revision you want, or run `pre-commit autoupdate`
+    hooks:
+    -   id: autopep8
+    
