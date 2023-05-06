@@ -8,7 +8,7 @@ help: ## Mostra lista de comandos
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[33m%-30s\033[0m %s\n", $$1, $$2}'
 
 init: ## Inicializa os serviços
-	-@docker network create financas > nul
+	-@docker network create financas > /dev/null
 	@docker-compose up -d
 	@output=$$(docker exec db pg_isready); \
 	while [[ "$$output" != *"accepting connections"* ]]; do \
@@ -16,8 +16,8 @@ init: ## Inicializa os serviços
 		output=$$(docker exec db pg_isready); \
 		sleep 0.5; \
 	done
-	@docker exec -i -u postgres db psql -c "CREATE DATABASE financas;"> nul; echo "Banco de dados criado"
-	@ls $(CURDIR)/apps/db/boot/*.sql  | sort | xargs cat | docker exec -i db psql -U postgres -d financas > nul; echo "Schemas e usuários criados"
+	@docker exec -i -u postgres db psql -c "CREATE DATABASE financas;"> /dev/null; echo "Banco de dados criado"
+	@ls $(CURDIR)/apps/db/boot/*.sql  | sort | xargs cat | docker exec -i db psql -U postgres -d financas > /dev/null; echo "Schemas e usuários criados"
 
 migrate: ## Usa Flyway para realizar migrations no banco de dados
 	@docker run --pull always --rm -v $(CURDIR)/apps/db/migrations:/flyway/sql \
@@ -32,5 +32,6 @@ migrate: ## Usa Flyway para realizar migrations no banco de dados
 			migrate
 
 clear-compose: ## Desliga todos os serviços, apaga todos volumes, redes e containers orfãos relacionados ao serviço
-	docker-compose down -v --remove-orphans
-	docker volume rm -f finanas_contas_db
+	@docker-compose down -v --remove-orphans
+	@docker volume rm -f finanas_contas_db
+	@docker network rm financas
