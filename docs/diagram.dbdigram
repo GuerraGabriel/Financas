@@ -1,0 +1,57 @@
+Enum "periodicidade" {
+  "diario"
+  "semanal"
+  "quinzenal"
+  "mensal"
+  "bimestral"
+  "trimestral"
+  "semestral"
+  "anual"
+}
+
+Ref:"financa"."conta"."id" < "financa"."pagamento"."conta_id"
+
+Ref:"financa"."conta"."id" < "financa"."conta_tag"."conta_id"
+
+Ref:"financa"."tag"."id" < "financa"."conta_tag"."tag_id"
+
+Table "financa"."receita" {
+  "id" SERIAL [pk, increment]
+  "origem" "CHARACTER VARYING(128)"
+  "valor" MONEY [not null, default: 0]
+  "recebido_em" DATE [not null, default: `NOW()`]
+  "periodicidade" periodicidade
+}
+
+Table "financa"."pagamento" {
+  "id" SERIAL [pk, increment]
+  "realizado_em" DATE [not null, default: `NOW()`]
+  "conta_id" INTEGER [not null]
+  "comprovante" "CHARACTER VARYING(255)"
+  "observacao" TEXT
+}
+
+Table "financa"."tag" {
+  "id" SERIAL [pk, increment]
+  "nome" "CHARACTER VARYING(128)" [not null]
+}
+
+Table "financa"."conta" {
+  "id" SERIAL [pk, increment]
+  "nome" "CHARACTER VARYING(255)" [not null]
+  "descricao" TEXT
+  "valor" MONEY [not null, default: 0]
+  "realizada_em" DATE [not null, default: `NOW()`]
+  "metodo_pagamento" "CHARACTER VARYING(255)" [not null]
+  "parcelas" INTEGER [not null, default: 1]
+  "debito_automatico" BOOLEAN [not null, default: FALSE]
+}
+
+Table "financa"."conta_tag" {
+  "conta_id" INTEGER [not null]
+  "tag_id" INTEGER [not null]
+
+Indexes {
+  (conta_id, tag_id) [pk]
+}
+}
