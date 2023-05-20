@@ -19,6 +19,7 @@ init: ## Inicializa os serviços
 	@docker exec -i -u postgres db psql -c "CREATE DATABASE financas;"> /dev/null; echo "Banco de dados criado"
 	@ls $(CURDIR)/apps/db/boot/*.sql  | sort | xargs cat | docker exec -i db psql -U postgres -d financas > /dev/null; echo "Schemas e usuários criados"
 
+
 migrate: ## Usa Flyway para realizar migrations no banco de dados
 	@docker run --pull always --rm -v $(CURDIR)/apps/db/migrations:/flyway/sql \
 		-e FLYWAY_EDITION=community \
@@ -35,3 +36,12 @@ clear-compose: ## Desliga todos os serviços, apaga todos volumes, redes e conta
 	@docker-compose down -v --remove-orphans
 	@docker volume rm -f finanas_contas_db
 	@docker network rm financas
+
+api: ##Inicia o container da API para debug e desenvolvimento
+	@docker-compose up -d api
+	@docker exec -it api
+
+python-dev:
+	python3.11 -m venv apps/api/venv
+	. 	/apps/api/venv/bin/activate
+	pip install -r requirements.txt

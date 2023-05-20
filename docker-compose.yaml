@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 volumes:
   contas_db:
@@ -19,4 +19,8 @@ services:
       - contas_db:/var/lib/postgresql/data
     ports:
       - 5433:5432
+  api:
+    extends:
+      file: apps/api/docker-compose.yml
+      service: api
     
