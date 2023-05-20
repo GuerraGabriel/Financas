@@ -1,0 +1,9 @@
+services:
+  api:
+    container_name: api-name
+    build: 
+      context: .
+      target: financas-api
+    ports: 
+      - 8080:8080
+    
