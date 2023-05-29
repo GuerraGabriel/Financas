@@ -15,7 +15,7 @@ class Periodicidade(Enum):
     
 
 class Receita(BaseModel):
-    id: int = Field(example=1234)
+    id: int | None = Field(example=1234)
     origem: str = Field(example="Salário")
     valor: int = Field(example=1000)
     recebido_em: date = Field(example=date.today())
